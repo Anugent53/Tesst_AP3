@@ -1,1 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
 
+# Define the radioactive decay function using Euler's method
+def radioactive_decay_euler(N0, tau, dt, tmax):
+    t_values = np.arange(0, tmax + dt, dt)  # Create time values from 0 to tmax
+    N_values = np.zeros(len(t_values))  # Create an array for N values
+    N_values[0] = N0  # Initial condition
+    
+    for i in range(1, len(t_values)):
+        N_values[i] = N_values[i-1] - (N_values[i-1] / tau) * dt  # Euler update for N
+    
+    return t_values, N_values
+
+# Exact solution function
+def exact_solution(N0, tau, t_values):
+    return N0 * np.exp(-t_values / tau)
+
+# Parameters for the problem
+N0 = 10
+tau = 2.0
+dt = 0.1
+tmax = 10
+
+# Get the Euler method results
+t_vals, N_euler_vals = radioactive_decay_euler(N0, tau, dt, tmax)
+
+# Get the exact solution
+N_exact_vals = exact_solution(N0, tau, t_vals)
+
+# Plotting the results
+plt.figure(figsize=(8, 6))
+plt.plot(t_vals, N_euler_vals, label="Euler's Method Solution", linestyle='--', marker='o', markersize=3)
+plt.plot(t_vals, N_exact_vals, label="Exact Solution", linestyle='-')
+# plt.title("Radioactive Decay: Euler's Method vs Exact Solution")
+plt.xlabel("Time (s)")
+plt.ylabel("Quantity (N(t))")
+plt.grid(False)
+plt.legend()
+plt.show()
+
+Nave = np.mean(N_exact_vals)
+NCalcAvg = np.mean(N_euler_vals)
+difference = Nave - NCalcAvg
+
+
+print("The average value of N is: ", Nave)
+print("The calculated average value of N is: ", NCalcAvg)
+print("The difference is: ", difference)
